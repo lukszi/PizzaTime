@@ -4,7 +4,7 @@ import cv2
 import numpy as np
 
 
-IMAGE_PATH = "C:/Users/Lukas/Downloads/Telegram Desktop/IMG_20210429_173028.jpg"
+IMAGE_PATH = "../res/data/base_data/7.jpg"
 NN_IMAGE_SIZE = (50, 50)
 
 
@@ -28,13 +28,29 @@ def threshold_image(image,
     return frame_threshold
 
 
+def are_contours_acceptable(contours):
+    contours_result = []
+    for contour, index in zip(contours, range(len(contours))):
+        size = cv2.contourArea(contour)
+        if size > 500:
+            for contour_before in contours_result:
+                for values in contour:
+                    for values_before in contour_before:
+                        if values[0][0] > values_before[0][0]:
+                            break
+            contours_result.append(contour)
+    return contours_result
+
+
 def find_contours(image, thresholded_image):
     contours, hierarchy = cv2.findContours(thresholded_image, cv2.RETR_LIST, cv2.CHAIN_APPROX_SIMPLE)
     # filter out smaller contours
-    # for contour in contours:
-    #     print(cv2.contourArea(contour))
-    # print('------')
-    contours = list(filter(lambda contour: cv2.contourArea(contour) > 50, contours))
+    for contour in contours:
+        print(cv2.contourArea(contour))
+    print('------')
+    # contours = list(filter(lambda contour: cv2.contourArea(contour) > 500, contours))
+    contours = are_contours_acceptable(contours)
+    print(len(contours))
     # draw_contours(contours, image)
     return contours
 
@@ -62,7 +78,7 @@ def get_surrounding_contour(contours, image_dim: Tuple[int, int]):
 
 def draw_contours(contours, image):
     for contour in contours:
-        if cv2.contourArea(contour) > 1000:
+        if cv2.contourArea(contour) > 500:
             [x, y, w, h] = cv2.boundingRect(contour)
 
             cv2.rectangle(image, (x, y), (x + w, y + h), (0, 255, 255), 2)
@@ -113,13 +129,6 @@ def preprocess_image_for_nn_classification(image):
     return cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
 
 
-def classify_extracted_image(contoured_images, nn):
-    results = []
-    for image in contoured_images:
-        image["image"] = preprocess_image_for_nn_classification(image["image"])
-        results.append({"result": np.argmax(nn.run(image["image"])), "bounding_rect": image["bounding_rect"]})
-    return results
-
 
 if __name__ == '__main__':
     im = get_image()
@@ -130,5 +139,3 @@ if __name__ == '__main__':
     get_surrounding_contour(cnt, preprocessed_im.shape)
     cnt_im = crop_contours(im, cnt)
     draw_contours(cnt, im)
-    # Recognize image
-    cnt_numbers = classify_extracted_image(cnt_im)
