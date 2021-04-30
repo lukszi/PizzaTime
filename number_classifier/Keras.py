@@ -1,14 +1,28 @@
+from os import walk
+
 import numpy as np
 import cv2
 from tensorflow import keras
 from tensorflow.keras import layers
 
 # Model / data parameters
+from number_classifier.generate_data_set import read_label_csv
+
 num_classes = 10
 input_shape = (28, 28, 1)
 
-def get_data(path):
-    x = np.array([])
+def get_traning_data(path: str = "../res/data/generated/"):
+    file_data = read_label_csv("../res/data/base_data/labels.csv")
+    y = np.array([])
+    for file_name in file_data:
+        expected_numbers = file_data[file_name]
+        result_y = np.zeros(12)
+        for expected_number in expected_numbers:
+            result_y[expected_number] = 1
+        y = np.hstack(y, result_y)
+        for (_, _, filenames) in walk(path):
+            number_file = cv2.imread(f'{path}{file_name}/{filenames}')
+
 
 
 # the data, split between train and test sets

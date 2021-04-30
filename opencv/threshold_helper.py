@@ -73,22 +73,22 @@ def on_high_V_thresh_trackbar(val):
 
 def search_for_best_parameters():
     accuracys = np.array([])
-    for low_H in range(0, 255, 10):
+    for low_H in range(100, 160, 10):
         print(low_H)
-        for max_H in range(low_H, 255, 10):
-            for low_S in range(0, 255, 10):
-                for max_S in range(low_S, 255, 10):
-                    for low_V in range(0, 255, 10):
-                        for max_V in range(low_V, 255, 10):
-                            file_data = read_label_csv("../res/data/base_data/labels.csv")
-                            accuracy = 0
-                            for file_name in file_data:
-                                expected_len = len(file_data[file_name])
-                                gotten_len = len(extract_ordered_numbers(f"../res/data/base_data/{file_name}"))
-                                if expected_len == gotten_len:
-                                    accuracy += 1
-                            accuracy = accuracy / 392
-                            accuracys = np.append(accuracys, np.array([accuracy, low_H, max_H, low_S, max_S, low_V, max_V]))
+        max_H = 180
+        for low_S in range(32, 100, 10):
+            for max_S in range(180, 255, 10):
+                for low_V in range(80, 140, 10):
+                    max_V = 255
+                    file_data = read_label_csv("../res/data/base_data/labels.csv")
+                    accuracy = 0
+                    for file_name in file_data:
+                        expected_len = len(file_data[file_name])
+                        gotten_len = len(extract_ordered_numbers(f"../res/data/base_data/{file_name}"))
+                        if expected_len == gotten_len:
+                            accuracy += 1
+                    accuracy = accuracy / 392
+                    accuracys = np.append(accuracys, np.array([accuracy, low_H, max_H, low_S, max_S, low_V, max_V]))
     best_index = np.argmax(accuracys, axis=0)
     return accuracys[best_index]
 
