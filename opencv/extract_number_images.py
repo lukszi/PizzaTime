@@ -1,7 +1,7 @@
 import cv2
 
 
-IMAGE_PATH = "../data/0.jpg"
+IMAGE_PATH = ""
 
 
 def get_image(image_path: str = IMAGE_PATH):
@@ -90,6 +90,6 @@ if __name__ == '__main__':
     preprocessed_im = threshold_image(im)
     cnt = find_contours(im, preprocessed_im)
     cnt_im = crop_contours(im, cnt)
-
+    draw_contours(cnt, im)
     # Recognize image
     cnt_numbers = classify_extracted_image(cnt_im)
