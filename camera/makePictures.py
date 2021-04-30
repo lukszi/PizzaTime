@@ -16,7 +16,6 @@ shutter_speed = args.shutter_speed
 contrast = args.contrast
 interval = args.interval
 resolution = (2592, 1952)
-array_shape = (resolution[1], resolution[0], 3)
 
 with PiCamera(resolution=resolution, framerate=Fraction(1000000, shutter_speed)) as camera:
     camera.iso = iso
