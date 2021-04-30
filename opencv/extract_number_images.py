@@ -1,7 +1,7 @@
 import cv2
 
 
-IMAGE_PATH = ""
+IMAGE_PATH = "../data/0.jpg"
 
 
 def get_image():
@@ -12,13 +12,13 @@ def get_image():
 def threshold_image(image):
     frame_hsv = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
 
-    low_h = 131
-    high_h = 167
+    low_h = 108
+    high_h = 180
 
-    low_s = 0
-    high_s = 125
+    low_s = 42
+    high_s = 255
 
-    low_v = 181
+    low_v = 128
     high_v = 255
 
     frame_threshold = cv2.inRange(frame_hsv, (low_h, low_s, low_v), (high_h, high_s, high_v))
@@ -38,10 +38,9 @@ def draw_contours(contours, image):
         if cv2.contourArea(contour) > 50:
             [x, y, w, h] = cv2.boundingRect(contour)
 
-            if h > 28:
-                cv2.rectangle(image, (x, y), (x + w, y + h), (0, 255, 255), 2)
-                cv2.imshow('contours', image)
-                cv2.waitKey(0)
+            cv2.rectangle(image, (x, y), (x + w, y + h), (0, 255, 255), 2)
+    cv2.imshow('contours', image)
+    cv2.waitKey(0)
 
 
 def extract_image(image, contour):
@@ -75,6 +74,6 @@ if __name__ == '__main__':
     preprocessed_im = threshold_image(im)
     cnt = find_contours(im, preprocessed_im)
     cnt_im = extract_contoured_images(im, cnt)
-
+    draw_contours(cnt, im)
     # Recognize image
     cnt_numbers = classify_extracted_image(cnt_im)
