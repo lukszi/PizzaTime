@@ -1,33 +1,36 @@
 import time
-import cv2
-from picamera.array import PiRGBArray
+from fractions import Fraction
+
 from picamera import PiCamera
+import argparse
 
-################################
-wCam, hCam = 320, 240
-################################
+parser = argparse.ArgumentParser()
+parser.add_argument("--iso", dest='iso', type=int, help="iso")
+parser.add_argument("--shutter", dest='shutter_speed', type=int, help="shutterspeed")
+parser.add_argument("--contrast", dest='contrast', type=int, help="contrast")
+parser.add_argument("--interval", dest='interval', type=int, help="interval")
+args = parser.parse_args()
 
-# cap = cv2.VideoCapture(0)
+iso = args.iso
+shutter_speed = args.shutter_speed
+contrast = args.contrast
+interval = args.interval
+resolution = (2592, 1952)
 
-camera = PiCamera()
-camera.resolution = (1280, 720)
-camera.framerate = 10
-rawCapture = PiRGBArray(camera, size=(1280, 720))
+with PiCamera(resolution=resolution, framerate=Fraction(1000000, shutter_speed)) as camera:
+    camera.iso = iso
+    camera.shutter_speed = shutter_speed
+    camera.contrast = contrast
+    iterator = 0
+    time.sleep(2)
 
-time.sleep(0.1)
+    while True:
+        filename = f'data/{str(iterator)}.jpg'
+        with open(filename, "wb") as file:
+            frame = camera.capture(file, format="jpeg", use_video_port=False)
+        iterator += 1
+        print("snap")
 
-# cap.set(3, wCam)
-# cap.set(4, hCam)
-iterator = 0
-for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=True):
-    # grab the raw NumPy array representing the image, then initialize the timestamp
-    # and occupied/unoccupied text
-    img = frame.array
-    print(img.shape)
-    filename = f'data/{str(iterator)}.jpg'
-    iterator += 1
-    cv2.imwrite(filename, img)
+        time.sleep(interval)
 
-    rawCapture.truncate(0)
 
-    time.sleep(1)
