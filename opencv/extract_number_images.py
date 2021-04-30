@@ -1,7 +1,9 @@
 import cv2
+import numpy as np
 
 
 IMAGE_PATH = ""
+NN_IMAGE_SIZE = (50, 50)
 
 
 def get_image(image_path: str = IMAGE_PATH):
@@ -12,13 +14,13 @@ def get_image(image_path: str = IMAGE_PATH):
 def threshold_image(image):
     frame_hsv = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
 
-    low_h = 108
+    low_h = 155
     high_h = 180
 
-    low_s = 42
+    low_s = 72
     high_s = 255
 
-    low_v = 128
+    low_v = 101
     high_v = 255
 
     frame_threshold = cv2.inRange(frame_hsv, (low_h, low_s, low_v), (high_h, high_s, high_v))
@@ -28,6 +30,9 @@ def threshold_image(image):
 def find_contours(image, thresholded_image):
     contours, hierarchy = cv2.findContours(thresholded_image, cv2.RETR_LIST, cv2.CHAIN_APPROX_SIMPLE)
     # filter out smaller contours
+    # for contour in contours:
+    #     print(cv2.contourArea(contour))
+    # print('------')
     contours = list(filter(lambda contour: cv2.contourArea(contour) > 50, contours))
     # draw_contours(contours, image)
     return contours
@@ -79,8 +84,17 @@ def extract_ordered_numbers(image_path: str):
     return contour_crops
 
 
-def classify_extracted_image(contoured_images):
-    pass
+def preprocess_image_for_nn_classification(image):
+    image = cv2.resize(image, NN_IMAGE_SIZE)
+    return cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+
+
+def classify_extracted_image(contoured_images, nn):
+    results = []
+    for image in contoured_images:
+        image["image"] = preprocess_image_for_nn_classification(image["image"])
+        results.append({"result": np.argmax(nn.run(image["image"])), "bounding_rect": image["bounding_rect"]})
+    return results
 
 
 if __name__ == '__main__':
