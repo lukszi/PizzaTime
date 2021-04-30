@@ -10,6 +10,8 @@ max_value_H = 360 // 2
 low_H = 0
 low_S = 0
 low_V = 0
+alpha = 33
+beta = 0
 high_H = max_value_H
 high_S = max_value
 high_V = max_value
@@ -18,6 +20,8 @@ window_detection_name = 'Object Detection'
 low_H_name = 'Low H'
 low_S_name = 'Low S'
 low_V_name = 'Low V'
+alpha_name = 'alpha'
+beta_name = "beta"
 high_H_name = 'High H'
 high_S_name = 'High S'
 high_V_name = 'High V'
@@ -29,6 +33,18 @@ def on_low_H_thresh_trackbar(val):
     low_H = val
     low_H = min(high_H - 1, low_H)
     cv.setTrackbarPos(low_H_name, window_detection_name, low_H)
+
+
+def on_alpha_trackbar(val):
+    global alpha
+    alpha = val
+    cv.setTrackbarPos(alpha_name, window_detection_name, alpha)
+
+
+def on_beta_trackbar(val):
+    global beta
+    beta = val
+    cv.setTrackbarPos(beta_name, window_detection_name, beta)
 
 
 def on_high_H_thresh_trackbar(val):
@@ -108,19 +124,33 @@ cv.createTrackbar(low_S_name, window_detection_name, low_S, max_value, on_low_S_
 cv.createTrackbar(high_S_name, window_detection_name, high_S, max_value, on_high_S_thresh_trackbar)
 cv.createTrackbar(low_V_name, window_detection_name, low_V, max_value, on_low_V_thresh_trackbar)
 cv.createTrackbar(high_V_name, window_detection_name, high_V, max_value, on_high_V_thresh_trackbar)
+cv.createTrackbar(alpha_name, window_detection_name, alpha, 100, on_alpha_trackbar)
+cv.createTrackbar(beta_name, window_detection_name, beta, 100, on_beta_trackbar)
 im = cv.imread("../res/data/base_data/1.jpg")
 im = cv.resize(im, (640, 480))
+
+counter = 1
 while True:
 
     frame = im
     if frame is None:
         break
+
+    if counter % 5000 == 0:
+        new_image = np.zeros(im.shape, im.dtype)
+        for y in range(im.shape[0]):
+            for x in range(im.shape[1]):
+                for c in range(im.shape[2]):
+                    new_image[y, x, c] = np.clip(alpha/100*3 * im[y, x, c] + beta, 0, 255)
+        frame = new_image
+        counter = 0
     frame_HSV = cv.cvtColor(frame, cv.COLOR_BGR2HSV)
     frame_threshold = cv.inRange(frame_HSV, (low_H, low_S, low_V), (high_H, high_S, high_V))
 
     cv.imshow(window_capture_name, frame)
     cv.imshow(window_detection_name, frame_threshold)
 
+    counter += 1
     key = cv.waitKey(30)
     if key == ord('q') or key == 27:
         break
