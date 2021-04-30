@@ -4,8 +4,8 @@ import cv2
 IMAGE_PATH = ""
 
 
-def get_image():
-    im = cv2.imread(IMAGE_PATH)
+def get_image(image_path: str = IMAGE_PATH):
+    im = cv2.imread(image_path)
     return cv2.resize(im, (640, 480))
 
 
@@ -55,13 +55,29 @@ def extract_image(image, contour):
     return extract
 
 
-def extract_contoured_images(image, contours):
+def crop_contours(image, contours):
     images = []
     for contour in contours:
         [x, y, w, h] = cv2.boundingRect(contour)
         extracted_image = extract_image(image, [x, y, w, h])
         images.append({"bounding_rect": (x, y, w, h), "image": extracted_image})
     return images
+
+
+def order_cropped_contours(contours: list):
+    contours.sort(key=lambda contour: contour["bounding_rect"][0])
+    return contours
+
+
+def extract_ordered_numbers(image_path: str):
+    image = get_image(image_path)
+
+    # Extract numbers from image
+    preprocessed_image = threshold_image(image)
+    contours = find_contours(image, preprocessed_image)
+    contour_crops = crop_contours(image, contours)
+    order_cropped_contours(contour_crops)
+    return contour_crops
 
 
 def classify_extracted_image(contoured_images):
@@ -74,7 +90,7 @@ if __name__ == '__main__':
     # Extract numbers from image
     preprocessed_im = threshold_image(im)
     cnt = find_contours(im, preprocessed_im)
-    cnt_im = extract_contoured_images(im, cnt)
+    cnt_im = crop_contours(im, cnt)
 
     # Recognize image
     cnt_numbers = classify_extracted_image(cnt_im)
