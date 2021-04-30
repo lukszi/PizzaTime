@@ -18,3 +18,9 @@
     
 - Telegram Bot
     - Testen ob AntiSpam feature greift
+  
+- OpenCv
+  - Zweifacher contouring durchlauf
+      - Im ersten Durchlauf Region finden die Zahlen enthält
+      - Im zweiten Durchlauf Zahlen akkurat contouren
+  - Config File erstellen
