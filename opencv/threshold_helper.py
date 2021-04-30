@@ -79,7 +79,7 @@ cv.createTrackbar(low_S_name, window_detection_name, low_S, max_value, on_low_S_
 cv.createTrackbar(high_S_name, window_detection_name, high_S, max_value, on_high_S_thresh_trackbar)
 cv.createTrackbar(low_V_name, window_detection_name, low_V, max_value, on_low_V_thresh_trackbar)
 cv.createTrackbar(high_V_name, window_detection_name, high_V, max_value, on_high_V_thresh_trackbar)
-im = cv.imread("C:/Users/Lukas/Downloads/Telegram Desktop/IMG_20210429_173028.jpg")
+im = cv.imread("")
 im = cv.resize(im, (640, 480))
 while True:
 
