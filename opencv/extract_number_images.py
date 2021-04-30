@@ -4,7 +4,7 @@ import cv2
 import numpy as np
 
 
-IMAGE_PATH = ""
+IMAGE_PATH = "C:/Users/Lukas/Downloads/Telegram Desktop/IMG_20210429_173028.jpg"
 NN_IMAGE_SIZE = (50, 50)
 
 
@@ -14,9 +14,9 @@ def get_image(image_path: str = IMAGE_PATH):
 
 
 def threshold_image(image,
-                    h: Tuple[int, int] = (155, 180),
-                    s: Tuple[int, int] = (72, 255),
-                    v: Tuple[int, int] = (101, 255)):
+                    h: Tuple[int, int] = (100, 180),
+                    s: Tuple[int, int] = (26, 255),
+                    v: Tuple[int, int] = (130, 255)):
     (low_h, high_h) = h
     (low_s, high_s) = s
     (low_v, high_v) = v
