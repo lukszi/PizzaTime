@@ -22,6 +22,7 @@ def threshold_image(image,
     (low_s, high_s) = s
     (low_v, high_v) = v
 
+    image = cv2.GaussianBlur(image, (5, 5), cv2.BORDER_DEFAULT)
     frame_hsv = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
     frame_threshold = cv2.inRange(frame_hsv, (low_h, low_s, low_v), (high_h, high_s, high_v))
     return frame_threshold
