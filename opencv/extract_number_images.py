@@ -1,3 +1,5 @@
+from typing import Tuple
+
 import cv2
 import numpy as np
 
@@ -11,18 +13,15 @@ def get_image(image_path: str = IMAGE_PATH):
     return cv2.resize(im, (640, 480))
 
 
-def threshold_image(image):
+def threshold_image(image,
+                    h: Tuple[int, int] = (155, 180),
+                    s: Tuple[int, int] = (72, 255),
+                    v: Tuple[int, int] = (101, 255)):
+    (low_h, high_h) = h
+    (low_s, high_s) = s
+    (low_v, high_v) = v
+
     frame_hsv = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
-
-    low_h = 155
-    high_h = 180
-
-    low_s = 72
-    high_s = 255
-
-    low_v = 101
-    high_v = 255
-
     frame_threshold = cv2.inRange(frame_hsv, (low_h, low_s, low_v), (high_h, high_s, high_v))
     return frame_threshold
 
@@ -36,6 +35,27 @@ def find_contours(image, thresholded_image):
     contours = list(filter(lambda contour: cv2.contourArea(contour) > 50, contours))
     # draw_contours(contours, image)
     return contours
+
+
+def get_surrounding_contour(contours, image_dim: Tuple[int, int]):
+    max_x = 0
+    max_y = 0
+    min_x = None
+    min_y = None
+
+    # Figure out minimal Box that bounds all of the given contours
+    for contour in contours:
+        [x, y, w, h] = cv2.boundingRect(contour)
+        x_top = x + w
+        y_top = y + h
+
+        max_x = x_top if x_top > max_x else max_x
+        max_y = y_top if y_top > max_y else max_y
+        min_x = x if not min_x or x < min_x else min_x
+        min_y = y if not min_y or y < min_y else min_y
+
+    # Add a Buffer onto that
+    # Todo
 
 
 def draw_contours(contours, image):
@@ -103,6 +123,7 @@ if __name__ == '__main__':
     # Extract numbers from image
     preprocessed_im = threshold_image(im)
     cnt = find_contours(im, preprocessed_im)
+    get_surrounding_contour(cnt, preprocessed_im.shape)
     cnt_im = crop_contours(im, cnt)
     draw_contours(cnt, im)
     # Recognize image
