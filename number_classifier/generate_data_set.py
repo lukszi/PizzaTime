@@ -30,8 +30,10 @@ def generate_data_set(source_folder: str = "../res/data/base_data", target_folde
     label_extraction_map = {}
     for file in labels:
         ordered_numbers = extract_ordered_numbers(f"{source_folder}/{file}")
-        label_extraction_map[file] = {"ordered_numbers": ordered_numbers, "labels": labels[file]}
-
+        expected_len = len(labels[file])
+        gotten_len = len(ordered_numbers)
+        if expected_len == gotten_len:
+            label_extraction_map[file] = {"ordered_numbers": ordered_numbers, "labels": labels[file]}
     write_labels(label_extraction_map, target_folder)
 
 
@@ -45,5 +47,17 @@ def read_label_csv(label_file_path: str = "res/data/base_data/labels.csv"):
     return labels
 
 
+def filter_wrong():
+    file_data = read_label_csv("../res/data/base_data/labels.csv")
+    training_files = []
+    for file_name in file_data:
+        expected_len = len(file_data[file_name])
+        gotten_len = len(extract_ordered_numbers(f"../res/data/base_data/{file_name}"))
+        if expected_len == gotten_len:
+            training_files.append(expected_len)
+    return training_files
+
+
 if __name__ == '__main__':
     generate_data_set()
+    # print(len(filter_wrong()))
