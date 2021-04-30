@@ -10,7 +10,8 @@ NN_IMAGE_SIZE = (50, 50)
 
 def get_image(image_path: str = IMAGE_PATH):
     im = cv2.imread(image_path)
-    return cv2.resize(im, (640, 480))
+    # return cv2.resize(im, (640, 480))
+    return im
 
 
 def threshold_image(image,
@@ -60,11 +61,11 @@ def get_surrounding_contour(contours, image_dim: Tuple[int, int]):
 
 def draw_contours(contours, image):
     for contour in contours:
-        if cv2.contourArea(contour) > 50:
+        if cv2.contourArea(contour) > 1000:
             [x, y, w, h] = cv2.boundingRect(contour)
 
             cv2.rectangle(image, (x, y), (x + w, y + h), (0, 255, 255), 2)
-    cv2.imshow('contours', image)
+    cv2.imshow('contours2', image)
     cv2.waitKey(0)
 
 
@@ -98,7 +99,9 @@ def extract_ordered_numbers(image_path: str):
 
     # Extract numbers from image
     preprocessed_image = threshold_image(image)
-    contours = find_contours(image, preprocessed_image)
+    # cv2.imshow('contours1', preprocessed_image)
+    # cv2.waitKey(0)
+    contours = find_contours(preprocessed_image, preprocessed_image)
     contour_crops = crop_contours(image, contours)
     order_cropped_contours(contour_crops)
     return contour_crops

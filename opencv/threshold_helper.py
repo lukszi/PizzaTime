@@ -94,33 +94,33 @@ def search_for_best_parameters():
 
 
 
-print(search_for_best_parameters())
+# print(search_for_best_parameters())
 
-# parser = argparse.ArgumentParser(description='Code for Thresholding Operations using inRange tutorial.')
-# parser.add_argument('--camera', help='Camera divide number.', default=0, type=int)
-# args = parser.parse_args()
-# cap = cv.VideoCapture(args.camera)
-# cv.namedWindow(window_capture_name)
-# cv.namedWindow(window_detection_name)
-# cv.createTrackbar(low_H_name, window_detection_name, low_H, max_value_H, on_low_H_thresh_trackbar)
-# cv.createTrackbar(high_H_name, window_detection_name, high_H, max_value_H, on_high_H_thresh_trackbar)
-# cv.createTrackbar(low_S_name, window_detection_name, low_S, max_value, on_low_S_thresh_trackbar)
-# cv.createTrackbar(high_S_name, window_detection_name, high_S, max_value, on_high_S_thresh_trackbar)
-# cv.createTrackbar(low_V_name, window_detection_name, low_V, max_value, on_low_V_thresh_trackbar)
-# cv.createTrackbar(high_V_name, window_detection_name, high_V, max_value, on_high_V_thresh_trackbar)
-# im = cv.imread("../res/data/base_data/1.jpg")
-# im = cv.resize(im, (640, 480))
-# while True:
-#
-#     frame = im
-#     if frame is None:
-#         break
-#     frame_HSV = cv.cvtColor(frame, cv.COLOR_BGR2HSV)
-#     frame_threshold = cv.inRange(frame_HSV, (low_H, low_S, low_V), (high_H, high_S, high_V))
-#
-#     cv.imshow(window_capture_name, frame)
-#     cv.imshow(window_detection_name, frame_threshold)
-#
-#     key = cv.waitKey(30)
-#     if key == ord('q') or key == 27:
-#         break
+parser = argparse.ArgumentParser(description='Code for Thresholding Operations using inRange tutorial.')
+parser.add_argument('--camera', help='Camera divide number.', default=0, type=int)
+args = parser.parse_args()
+cap = cv.VideoCapture(args.camera)
+cv.namedWindow(window_capture_name)
+cv.namedWindow(window_detection_name)
+cv.createTrackbar(low_H_name, window_detection_name, low_H, max_value_H, on_low_H_thresh_trackbar)
+cv.createTrackbar(high_H_name, window_detection_name, high_H, max_value_H, on_high_H_thresh_trackbar)
+cv.createTrackbar(low_S_name, window_detection_name, low_S, max_value, on_low_S_thresh_trackbar)
+cv.createTrackbar(high_S_name, window_detection_name, high_S, max_value, on_high_S_thresh_trackbar)
+cv.createTrackbar(low_V_name, window_detection_name, low_V, max_value, on_low_V_thresh_trackbar)
+cv.createTrackbar(high_V_name, window_detection_name, high_V, max_value, on_high_V_thresh_trackbar)
+im = cv.imread("../res/data/base_data/1.jpg")
+im = cv.resize(im, (640, 480))
+while True:
+
+    frame = im
+    if frame is None:
+        break
+    frame_HSV = cv.cvtColor(frame, cv.COLOR_BGR2HSV)
+    frame_threshold = cv.inRange(frame_HSV, (low_H, low_S, low_V), (high_H, high_S, high_V))
+
+    cv.imshow(window_capture_name, frame)
+    cv.imshow(window_detection_name, frame_threshold)
+
+    key = cv.waitKey(30)
+    if key == ord('q') or key == 27:
+        break
