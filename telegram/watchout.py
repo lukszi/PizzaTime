@@ -38,7 +38,7 @@ def warn(n=10):
     """
     for i in range(0, n):
         for chat_id in chat_ids:
-            telegram_bot_sendtext("LAUF", chat_id)
+            telegram_bot_sendtext("PizzaTime", chat_id)
 
 
 def get_new_chat_ids():
